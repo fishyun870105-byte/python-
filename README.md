@@ -1,5 +1,4 @@
-**🐍 Python 實用小工具集**       
-這裡收錄了Python實作練習：
+**🐍 Python實作練習：**
 
 ### 1. 🌐 即時語音翻譯懸浮小工具 (`livetranslate_app.py`)
 - **介紹**：基於 Python 與 Faster-Whisper 撰寫的懸浮即時翻譯桌面工具，能即時擷取系統音訊並轉譯為繁體中文。
