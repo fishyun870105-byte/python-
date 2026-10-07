@@ -7,11 +7,9 @@ import customtkinter as ctk
 import speech_recognition as sr
 import time
 
-# 設定 CustomTkinter 暖色質感外觀
 ctk.set_appearance_mode("Light")
 ctk.set_default_color_theme("blue")
 
-# --- 衛教影音與文字資料庫 ---
 HEALTH_DATABASE = {
     "血壓": {
         "url": "https://youtu.be/StrBf3zvG-k?si=NYFhgEssjX5aqFvs",
@@ -71,10 +69,9 @@ class WarmYouTubeHealthApp(ctk.CTk):
     # 視窗基本設定
     self.title("健康衛教小幫手")
     self.geometry("820x560")
-    self.configure(fg_color="#FDF8F2")  # 柔和奶茶白背景
-    self.overrideredirect(True)  # 移除傳統邊框
+    self.configure(fg_color="#FDF8F2")  
+    self.overrideredirect(True) 
 
-    # --- 1. 頂部自製暖色標題列 (可拖曳視窗) ---
     self.header = ctk.CTkFrame(
         self, fg_color="#F4ECE1", height=50, corner_radius=12
     )
@@ -88,7 +85,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
     )
     self.title_label.pack(side="left", padx=10)
 
-    # 右上角關閉按鈕
     self.close_btn = ctk.CTkButton(
         self.header,
         text="✕",
@@ -103,13 +99,11 @@ class WarmYouTubeHealthApp(ctk.CTk):
     )
     self.close_btn.pack(side="right", padx=10)
 
-    # 綁定頂部拖曳事件
     self.header.bind("<ButtonPress-1>", self.start_move)
     self.header.bind("<B1-Motion>", self.do_move)
     self.title_label.bind("<ButtonPress-1>", self.start_move)
     self.title_label.bind("<B1-Motion>", self.do_move)
 
-    # --- 2. 中央主內容卡片區塊 ---
     self.main_card = ctk.CTkFrame(
         self,
         fg_color="#FFFFFF",
@@ -119,7 +113,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
     )
     self.main_card.pack(fill="both", expand=True, padx=15, pady=(0, 10))
 
-    # 動態狀態提示標籤
     self.status_label = ctk.CTkLabel(
         self.main_card,
         text="🎙️ 點擊下方按鈕，說出想查詢的內容（例如：血壓、血糖、膝蓋）",
@@ -129,7 +122,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
     self.main_card.pack_propagate(False)
     self.status_label.pack(anchor="w", padx=25, pady=(20, 10))
 
-    # 資訊顯示文字框
     self.textbox = ctk.CTkTextbox(
         self.main_card,
         font=("Microsoft JhengHei UI", 17),
@@ -139,7 +131,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
     )
     self.textbox.pack(fill="both", expand=True, padx=20, pady=10)
 
-    # 設定綠色文字的 tag
     self.textbox.tag_config("green_tag", foreground="#059669")
 
     self.textbox.insert(
@@ -152,11 +143,9 @@ class WarmYouTubeHealthApp(ctk.CTk):
         "系統將自動為您播放相關的衛教影片與重點說明。",
     )
 
-    # --- 3. 底部精緻控制列 ---
     self.footer_frame = ctk.CTkFrame(self, fg_color="transparent", height=60)
     self.footer_frame.pack(fill="x", padx=15, pady=(0, 15))
 
-    # 語音聆聽按鈕
     self.mic_btn = ctk.CTkButton(
         self.footer_frame,
         text="🎙 開始語音提問",
@@ -170,7 +159,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
     )
     self.mic_btn.pack(side="left", fill="x", expand=True, padx=(0, 8))
 
-    # 清除重設按鈕
     self.clear_btn = ctk.CTkButton(
         self.footer_frame,
         text="清除畫面",
@@ -185,7 +173,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
     )
     self.clear_btn.pack(side="right")
 
-  # --- 視窗拖曳核心邏輯 ---
   def start_move(self, event):
     self.x = event.x
     self.y = event.y
@@ -212,7 +199,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
         text="🎙 畫面已重設，請點擊下方按鈕重新提問", text_color="#B45309"
     )
 
-  # --- 背景語音聆聽與 YouTube 連結觸發 ---
   def start_listening_thread(self):
     self.mic_btn.configure(
         state="disabled", text="⏳ 正在聆聽中...", fg_color="#FBBF24"
@@ -225,10 +211,9 @@ class WarmYouTubeHealthApp(ctk.CTk):
   def process_voice_query(self):
     try:
       time.sleep(0.5)
-      duration = 6  # 錄音 6 秒
-      fs = 16000  # 取樣率
+      duration = 6 
+      fs = 16000 
 
-      # 使用 sounddevice 錄音（指定正確的編號 2 麥克風）
       audio_data = sd.rec(
           int(duration * fs),
           samplerate=fs,
@@ -245,7 +230,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
           ),
       )
 
-      # 存成暫存檔給 google 語音辨識使用
       with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
         wav.write(f.name, fs, audio_data)
         temp_path = f.name
@@ -330,7 +314,6 @@ class WarmYouTubeHealthApp(ctk.CTk):
     self.textbox.delete("1.0", "end")
     self.textbox.insert("end", text)
 
-    # 用程式自動在文字框中搜尋關鍵字的位置並上色
     pos = "1.0"
     while True:
       pos = self.textbox.search(keyword, pos, stopindex="end")
